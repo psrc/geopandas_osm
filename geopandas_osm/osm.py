@@ -159,9 +159,9 @@ def read_osm(content, render=True, **kwargs):
     data = OSMData(nodes, waynodes, waytags, relmembers, reltags)
     
     if render:
-        data = render_to_gdf(data, **kwargs)
+        ways, nodes = render_to_gdf(data, **kwargs)
 
-    return data
+    return ways, nodes
 
 
 def read_nodes(doc):
@@ -271,11 +271,12 @@ def render_to_gdf(osmdata, drop_untagged=True):
     nodes = render_nodes(osmdata.nodes, drop_untagged)
 
     ways = render_ways(osmdata.nodes, osmdata.waynodes, osmdata.waytags)
-    if ways is not None:
-        # We should get append working
-        nodes = nodes.append(ways).set_geometry('geometry', crs=_crs)
+    # if ways is not None:
+    #     # We should get append working
+    #     #nodes = nodes.append(ways).set_geometry('geometry', crs=_crs)
+    #     gpd.GeoDataFrame(pd.concat([nodes, ways])).set_geometry('geometry', crs = _crs)
 
-    return nodes
+    return ways, nodes
 
 
 def render_nodes(nodes, drop_untagged=True):
